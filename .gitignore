@@ -1,0 +1,18 @@
+# Dependencias
+node_modules/
+
+# Código compilado de TypeScript
+dist/
+
+# Variables de entorno (¡nunca subir tokens o contraseñas!)
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
