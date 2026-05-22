@@ -5,6 +5,8 @@ import { GetRepositorySchema } from './schemas/get-repository.schema';
 import { getRepositoryHandler } from './handlers/get-repository.handler';
 import { ListRepositoriesSchema } from './schemas/list-repository.schema';
 import { listRepositoriesHandler } from './handlers/list-repository.handler';
+import { CreateCommitSchema } from './schemas/create-commit.schema';
+import { createCommitHandler } from './handlers/create-commit.handler';
 
 async function main() {
     // PASO 1: Crear el servidor
@@ -44,7 +46,22 @@ async function main() {
         }
     );
 
-    console.error('Server MCP iniciado con tools: get_repository, list_repositories');
+    // PASO 5: Registrar la tercera tool
+    server.tool(
+        'create_commit',
+        'Crea un commit en un repositorio de GitHub. Requiere owner, repo, branch, path (ruta del archivo), content (contenido del archivo) y message (mensaje del commit).',
+        CreateCommitSchema.shape,
+        async (input) => {
+            const result = await createCommitHandler(input, octokit);
+            const isError = 'isError' in result ? result.isError : false;
+            return {
+                content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],
+                isError,
+            };
+        }
+    );
+
+    console.error('Server MCP iniciado con tools: get_repository, list_repositories, create_commit');
 
     // PASO 4: Conectar transporte
     const transport = new StdioServerTransport();
